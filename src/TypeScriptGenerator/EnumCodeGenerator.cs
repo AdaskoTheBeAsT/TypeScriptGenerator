@@ -74,8 +74,11 @@ namespace TypeScriptGenerator
 
             sb.AppendLine(
                 $@"  export function getKeys(): string[] {{
-    let keys: string[] = [];
+    const keys: string[] = [];
     for (let enumMember in {typeName}) {{
+      if(!{typeName}.hasOwnProperty(enumMember)) {{
+        continue;
+      }}
       if(isValidMember(enumMember)) {{
         keys.push({typeName}[enumMember]);
       }}
@@ -85,8 +88,11 @@ namespace TypeScriptGenerator
 
             sb.AppendLine(
                 $@"  export function getValues(): {typeName}[] {{
-    let values: {typeName}[] = [];
+    const values: {typeName}[] = [];
     for (let enumMember in {typeName}) {{
+      if(!{typeName}.hasOwnProperty(enumMember)) {{
+        continue;
+      }}
       if(isValidMember(enumMember)) {{
         values.push(enumMember);
       }}        
@@ -145,28 +151,34 @@ namespace TypeScriptGenerator
 
             sb.AppendLine(
                 $@"  export function getKeys(): string[] {{
-    let keys: string[] = [];
-    for(let key in {typeName}) {{
-      if(!isValidMember(key)){{
+    const keys: string[] = [];
+    for(let enumMember in {typeName}) {{
+      if(!{typeName}.hasOwnProperty(enumMember)) {{
         continue;
       }}
-      const member = {typeName}[key];
+      if(!isValidMember(enumMember)){{
+        continue;
+      }}
+      const member = {typeName}[enumMember];
       if(typeof member === 'function'){{
         continue;
       }}
-      keys.push(key);
+      keys.push(enumMember);
     }} 
     return keys;
   }}").AppendLine();
 
             sb.AppendLine(
                 $@"  export function getValues(): {typeName}[] {{
-    let values: {typeName}[] = [];
-    for (let key in {typeName}) {{
-      if (!isValidMember(key)) {{
+    const values: {typeName}[] = [];
+    for (let enumMember in {typeName}) {{
+      if(!{typeName}.hasOwnProperty(enumMember)) {{
         continue;
       }}
-      const member = {typeName}[key];
+      if (!isValidMember(enumMember)) {{
+        continue;
+      }}
+      const member = {typeName}[enumMember];
       if(typeof member === 'function'){{
         continue;
       }}
@@ -233,7 +245,7 @@ namespace TypeScriptGenerator
             var typeName = namedTypeSymbolData.Name;
             sb.AppendLine(
                 @$"  export function hasFlag(value: {typeName}, expected: {typeName}) {{
-    return (value & expected) === expected;
+    return (value && expected) === expected;
   }}").AppendLine();
         }
     }
