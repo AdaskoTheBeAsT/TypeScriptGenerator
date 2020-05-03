@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".props", ".props", "{6BCA9799-1BD1-4A5D-A3C2-047187D026B1}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		AdaskoTheBeAsT.ruleset = AdaskoTheBeAsT.ruleset
+		DeterministicBuild.targets = DeterministicBuild.targets
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		global.json = global.json
+		LICENSE = LICENSE
+		README.md = README.md
+		SecurityCodeScan.config.yml = SecurityCodeScan.config.yml
+		Settings.StyleCop = Settings.StyleCop
+		stylecop.json = stylecop.json
+		TypeScriptGenerator.sln.DotSettings = TypeScriptGenerator.sln.DotSettings
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{05DAC15B-9FCE-4B2B-92A9-8979CCDAE79C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypeScriptGenerator", "src\TypeScriptGenerator\TypeScriptGenerator.csproj", "{3A719501-ABC9-4AE7-A009-3235E1E182F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3F8214B9-CCCF-4BAB-8D37-C1946F928FC4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularWebApp", "samples\AngularWebApp\AngularWebApp.csproj", "{45161F3F-027A-4260-A2B0-CE09496B0967}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A719501-ABC9-4AE7-A009-3235E1E182F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A719501-ABC9-4AE7-A009-3235E1E182F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A719501-ABC9-4AE7-A009-3235E1E182F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A719501-ABC9-4AE7-A009-3235E1E182F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45161F3F-027A-4260-A2B0-CE09496B0967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45161F3F-027A-4260-A2B0-CE09496B0967}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45161F3F-027A-4260-A2B0-CE09496B0967}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45161F3F-027A-4260-A2B0-CE09496B0967}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3A719501-ABC9-4AE7-A009-3235E1E182F6} = {05DAC15B-9FCE-4B2B-92A9-8979CCDAE79C}
+		{45161F3F-027A-4260-A2B0-CE09496B0967} = {3F8214B9-CCCF-4BAB-8D37-C1946F928FC4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DC488CCD-8D66-481C-805F-BFFAF90CF468}
+	EndGlobalSection
+EndGlobal
