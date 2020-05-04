@@ -68,7 +68,6 @@ namespace TypeScriptGenerator
 #pragma warning restore S1481 // Unused local variables should be removed
 
             var enumSymbols = FilterEnumSymbols(receiver!, compilation, includeAttributeSymbol!);
-
             ////CleanOutputFolders(TargetPath);
             var enumCodeGenerator = new EnumCodeGenerator();
             enumCodeGenerator.Generate(

@@ -28,10 +28,10 @@ namespace TypeScriptGenerator
                         ad.AttributeClass?.Equals(enumAsStringAttributeSymbol, SymbolEqualityComparer.Default) == true))
                 {
                     GenerateStringEnum(
-                        namedTypeSymbolData,
-                        flagsAttributeSymbol,
-                        enumLabelAttributeSymbol,
-                        targetPath);
+                       namedTypeSymbolData,
+                       flagsAttributeSymbol,
+                       enumLabelAttributeSymbol,
+                       targetPath);
                 }
                 else
                 {
@@ -122,16 +122,19 @@ namespace TypeScriptGenerator
         {
             var flagsAttributeData = namedTypeSymbolData.NamedTypeSymbol.GetAttributes().FirstOrDefault(a =>
                 a.AttributeClass?.Equals(flagsAttributeSymbol, SymbolEqualityComparer.Default) == true);
+
             if (flagsAttributeData != null)
             {
                 throw new StringEnumsCantBeUsedWithFlagsAttributeException();
             }
 
             var typeName = namedTypeSymbolData.Name;
+
             var targetFile = GetTargetFile(targetPath, typeName);
             var fields = GetFieldSymbols(namedTypeSymbolData);
 
             var sb = new StringBuilder();
+
             sb.AppendLine(CodeGenerator.Header).AppendLine();
             sb.AppendLine($"export enum {typeName} {{");
             foreach (var fieldSymbol in fields)
