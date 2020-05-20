@@ -2,8 +2,8 @@
 {
     public partial class CodeGenerator
     {
+        public static readonly string EnumLabelAttributeFullName = $"{CustomNamespace}.{EnumLabelAttributeName}";
         private const string EnumLabelAttributeName = "EnumLabelAttribute";
-        private static readonly string EnumLabelAttributeFullName = $"{CustomNamespace}.{EnumLabelAttributeName}";
         private static readonly string EnumLabelAttributeText =
             $@"using System;
 

@@ -17,10 +17,12 @@ namespace TypeScriptGenerator
         public const string ModelsPath = "models";
         public const string EnumsPath = "enums";
         public const string ServicesPath = "services";
+        public const string FlagsAttributeFullName = "System.FlagsAttribute";
+        public const string ControllerBaseTypeName = "Microsoft.AspNetCore.Mvc.ControllerBase";
+        public const string ControllerTypeName = "Microsoft.AspNetCore.Mvc.Controller";
         public static readonly Encoding Uft8WithoutBomEncoding = new UTF8Encoding(false, true);
         private const string CustomNamespace = "TypeScriptGenerator";
         private const string TargetPath = "./ClientApp/src/api";
-        private const string FlagsAttributeFullName = "System.FlagsAttribute";
 
         public void Execute(SourceGeneratorContext context)
         {
@@ -36,46 +38,23 @@ namespace TypeScriptGenerator
                 throw new SymbolNotFoundException();
             }
 
-            var enumAsStringAttributeSymbol = compilation!.GetTypeByMetadataName(EnumAsStringAttributeFullName);
-            if (enumAsStringAttributeSymbol is null)
-            {
-                throw new SymbolNotFoundException();
-            }
-
-            var enumLabelAttributeSymbol = compilation!.GetTypeByMetadataName(EnumLabelAttributeFullName);
-            if (enumLabelAttributeSymbol is null)
-            {
-                throw new SymbolNotFoundException();
-            }
-
-            var flagsAttributeSymbol = compilation!.GetTypeByMetadataName(FlagsAttributeFullName);
-            if (flagsAttributeSymbol is null)
-            {
-                throw new SymbolNotFoundException();
-            }
-
             var customNameAttributeSymbol = compilation!.GetTypeByMetadataName(CustomNameAttributeFullName);
             if (customNameAttributeSymbol is null)
             {
                 throw new SymbolNotFoundException();
             }
 
-            // loop over the candidate fields, and keep the ones that are actually annotated
-#pragma warning disable S1481 // Unused local variables should be removed
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-            var classSymbols = FilterClassSymbols(receiver!, compilation, includeAttributeSymbol!);
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
-#pragma warning restore S1481 // Unused local variables should be removed
-
-            var enumSymbols = FilterEnumSymbols(receiver!, compilation, includeAttributeSymbol!);
             ////CleanOutputFolders(TargetPath);
+            // loop over the candidate fields, and keep the ones that are actually annotated
+            var enumSymbols = FilterEnumSymbols(receiver!, compilation, includeAttributeSymbol!);
             var enumCodeGenerator = new EnumCodeGenerator();
             enumCodeGenerator.Generate(
                 TargetPath,
-                flagsAttributeSymbol,
-                enumAsStringAttributeSymbol,
-                enumLabelAttributeSymbol,
+                compilation!,
                 enumSymbols);
+            var classSymbols = FilterClassSymbols(receiver!, compilation, includeAttributeSymbol!);
+            var modelCodeGenerator = new ModelCodeGenerator();
+            modelCodeGenerator.Generate(TargetPath, compilation, classSymbols);
         }
 
         public void Initialize(InitializationContext context)

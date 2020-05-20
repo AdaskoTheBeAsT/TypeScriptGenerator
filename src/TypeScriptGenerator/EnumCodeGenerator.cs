@@ -11,14 +11,35 @@ namespace TypeScriptGenerator
     {
         public void Generate(
             string targetPath,
-            INamedTypeSymbol flagsAttributeSymbol,
-            INamedTypeSymbol enumAsStringAttributeSymbol,
-            INamedTypeSymbol enumLabelAttributeSymbol,
+            Compilation compilation,
             List<NamedTypeSymbolData> enumSymbols)
         {
+            if (compilation is null)
+            {
+                throw new ArgumentNullException(nameof(compilation));
+            }
+
             if (enumSymbols is null)
             {
                 throw new ArgumentNullException(nameof(enumSymbols));
+            }
+
+            var enumAsStringAttributeSymbol = compilation!.GetTypeByMetadataName(CodeGenerator.EnumAsStringAttributeFullName);
+            if (enumAsStringAttributeSymbol is null)
+            {
+                throw new SymbolNotFoundException();
+            }
+
+            var enumLabelAttributeSymbol = compilation!.GetTypeByMetadataName(CodeGenerator.EnumLabelAttributeFullName);
+            if (enumLabelAttributeSymbol is null)
+            {
+                throw new SymbolNotFoundException();
+            }
+
+            var flagsAttributeSymbol = compilation!.GetTypeByMetadataName(CodeGenerator.FlagsAttributeFullName);
+            if (flagsAttributeSymbol is null)
+            {
+                throw new SymbolNotFoundException();
             }
 
             foreach (var namedTypeSymbolData in enumSymbols)
