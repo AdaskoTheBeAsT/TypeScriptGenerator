@@ -47,6 +47,12 @@ namespace TypeScriptGenerator
             ////CleanOutputFolders(TargetPath);
             // loop over the candidate fields, and keep the ones that are actually annotated
             var enumSymbols = FilterEnumSymbols(receiver!, compilation, includeAttributeSymbol!);
+            if (enumSymbols?.Count > 0)
+            {
+                var enumHelperGenerator = new EnumHelperGenerator();
+                enumHelperGenerator.Generate(TargetPath);
+            }
+
             var enumCodeGenerator = new EnumCodeGenerator();
             enumCodeGenerator.Generate(
                 TargetPath,
@@ -82,8 +88,7 @@ namespace TypeScriptGenerator
 
             // we're going to create a new compilation that contains the attribute.
             // TODO: we should allow source generators to provide source during initialize, so that this step isn't required.
-            var csharpCompilation = context.Compilation as CSharpCompilation;
-            if (csharpCompilation is null)
+            if (!(context.Compilation is CSharpCompilation csharpCompilation))
             {
                 compilation = null;
                 return false;

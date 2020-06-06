@@ -26,6 +26,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3F8214B9-CCCF-4BAB-8D37-C1946F928FC4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularWebApp", "samples\AngularWebApp\AngularWebApp.csproj", "{45161F3F-027A-4260-A2B0-CE09496B0967}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A719501-ABC9-4AE7-A009-3235E1E182F6} = {3A719501-ABC9-4AE7-A009-3235E1E182F6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

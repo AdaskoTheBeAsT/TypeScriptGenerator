@@ -12,7 +12,7 @@ namespace TypeScriptGenerator
         public void Generate(
             string targetPath,
             Compilation compilation,
-            List<NamedTypeSymbolData> enumSymbols)
+            List<NamedTypeSymbolData>? enumSymbols)
         {
             if (compilation is null)
             {
@@ -77,6 +77,7 @@ namespace TypeScriptGenerator
 
             var sb = new StringBuilder();
             sb.AppendLine(CodeGenerator.Header).AppendLine();
+            sb.AppendLine("import { EnumHelper } from './_enum-helper';").AppendLine();
             sb.AppendLine($"export enum {typeName} {{");
             foreach (var fieldSymbol in fields)
             {
@@ -95,38 +96,15 @@ namespace TypeScriptGenerator
 
             sb.AppendLine(
                 $@"  export function getKeys(): string[] {{
-    const keys: string[] = [];
-    for (let enumMember in {typeName}) {{
-      if(!{typeName}.hasOwnProperty(enumMember)) {{
-        continue;
-      }}
-      if(isValidMember(enumMember)) {{
-        keys.push({typeName}[enumMember]);
-      }}
-    }}
-    return keys;  
+    return EnumHelper.getKeys({typeName});  
   }}").AppendLine();
 
             sb.AppendLine(
                 $@"  export function getValues(): {typeName}[] {{
-    const values: {typeName}[] = [];
-    for (let enumMember in {typeName}) {{
-      if(!{typeName}.hasOwnProperty(enumMember)) {{
-        continue;
-      }}
-      if(isValidMember(enumMember)) {{
-        values.push(enumMember);
-      }}        
-    }}
-    return values;  
+    return EnumHelper.getValues({typeName});
   }}").AppendLine();
 
             GenerateHasFlag(namedTypeSymbolData, flagsAttributeSymbol, sb);
-
-            sb.AppendLine(
-                @"  function isValidMember(value: any): value is number {
-    return !isNaN(parseInt(value));
-  }");
 
             sb.AppendLine().AppendLine("}").AppendLine();
 
@@ -157,6 +135,7 @@ namespace TypeScriptGenerator
             var sb = new StringBuilder();
 
             sb.AppendLine(CodeGenerator.Header).AppendLine();
+            sb.AppendLine("import { EnumHelper } from './_enum-helper';").AppendLine();
             sb.AppendLine($"export enum {typeName} {{");
             foreach (var fieldSymbol in fields)
             {
@@ -175,46 +154,13 @@ namespace TypeScriptGenerator
 
             sb.AppendLine(
                 $@"  export function getKeys(): string[] {{
-    const keys: string[] = [];
-    for(let enumMember in {typeName}) {{
-      if(!{typeName}.hasOwnProperty(enumMember)) {{
-        continue;
-      }}
-      if(!isValidMember(enumMember)){{
-        continue;
-      }}
-      const member = {typeName}[enumMember];
-      if(typeof member === 'function'){{
-        continue;
-      }}
-      keys.push(enumMember);
-    }} 
-    return keys;
+    return EnumHelper.getKeys({typeName});
   }}").AppendLine();
 
             sb.AppendLine(
-                $@"  export function getValues(): {typeName}[] {{
-    const values: {typeName}[] = [];
-    for (let enumMember in {typeName}) {{
-      if(!{typeName}.hasOwnProperty(enumMember)) {{
-        continue;
-      }}
-      if (!isValidMember(enumMember)) {{
-        continue;
-      }}
-      const member = {typeName}[enumMember];
-      if(typeof member === 'function'){{
-        continue;
-      }}
-      values.push(member);
-    }}   
-    return values;
+                $@"  export function getValues(): string[] {{
+    return EnumHelper.getValues({typeName}) as string[];
   }}").AppendLine();
-
-            sb.AppendLine(
-                $@"  function isValidMember(value: string): value is keyof typeof {typeName} {{
-    return value in {typeName};
-  }}");
 
             sb.AppendLine().AppendLine("}").AppendLine();
 
