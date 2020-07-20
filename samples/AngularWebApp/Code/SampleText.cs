@@ -6,6 +6,7 @@ namespace AngularWebApp.Code
     {
         [TypeScriptGenerator.EnumLabel("Zero")]
         One,
+
         Two,
     }
 }

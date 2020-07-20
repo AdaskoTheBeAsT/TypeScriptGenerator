@@ -5,5 +5,5 @@ import { Material } from './Material';
 export class Product {
   public id: number;
   public name: string;
-  public material: any;
+  public material: Material;
 }

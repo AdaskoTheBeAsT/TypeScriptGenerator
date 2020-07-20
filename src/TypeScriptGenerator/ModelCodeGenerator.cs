@@ -67,13 +67,8 @@ namespace TypeScriptGenerator
         internal bool SkipClass(NamedTypeSymbolData namedTypeSymbolData, INamedTypeSymbol controllerBaseSymbol, INamedTypeSymbol controllerSymbol)
         {
             var baseType = namedTypeSymbolData.NamedTypeSymbol.BaseType;
-            if (baseType != null && (baseType.Equals(controllerBaseSymbol, SymbolEqualityComparer.Default)
-                || baseType.Equals(controllerSymbol, SymbolEqualityComparer.Default)))
-            {
-                return true;
-            }
-
-            return false;
+            return baseType != null && (baseType.Equals(controllerBaseSymbol, SymbolEqualityComparer.Default)
+                                        || baseType.Equals(controllerSymbol, SymbolEqualityComparer.Default));
         }
 
         internal void GenerateHeader(StringBuilder sb)
@@ -139,11 +134,11 @@ namespace TypeScriptGenerator
 
         internal void GenerateProperty(StringBuilder sb, IPropertySymbol publicProperty)
         {
-            var translatedType = TranslateTypeToTypescript(publicProperty.Type);
+            var translatedType = TranslateTypeToTypeScript(publicProperty.Type);
             sb.AppendLine($"  public {publicProperty.Name.ToCamelCase()}: {translatedType};");
         }
 
-        internal string TranslateTypeToTypescript(ITypeSymbol publicPropertyType)
+        internal string TranslateTypeToTypeScript(ITypeSymbol publicPropertyType)
         {
             return publicPropertyType.SpecialType switch
             {
@@ -163,7 +158,7 @@ namespace TypeScriptGenerator
                 SpecialType.System_UInt16 => "number",
                 SpecialType.System_UInt32 => "number",
                 SpecialType.System_UInt64 => "number",
-                _ => "any",
+                _ => publicPropertyType.Name,
             };
         }
 
