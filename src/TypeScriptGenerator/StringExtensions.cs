@@ -24,7 +24,7 @@ namespace TypeScriptGenerator
 
                 if (sb.Length > 0)
                 {
-                    sb.Append("-");
+                    sb.Append('-');
                 }
 
                 sb.Append(char.ToLower(ch, CultureInfo.InvariantCulture));
