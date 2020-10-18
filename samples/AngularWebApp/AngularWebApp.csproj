@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,12 +10,14 @@
 
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
+    <!-- This is default path (can be removed). Use only when you want to change final output path -->
+    <TypeScriptGeneratorOutputPath>$(MSBuildProjectDirectory)\ClientApp\src\api</TypeScriptGeneratorOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.0-preview.8.20414.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.0-rc.2.20475.17" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,16 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\src\api\enums\" />
-    <Folder Include="ClientApp\src\api\models\" />
-    <Folder Include="ClientApp\src\api\services\" />
+    <ProjectReference Include="..\..\src\TypeScriptGenerator\TypeScriptGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\TypeScriptGenerator\TypeScriptGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-  </ItemGroup>
-
- <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
@@ -62,5 +58,8 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+ <!--Remove when referencing nuget package-->
+ <Import Project="..\..\src\TypeScriptGenerator\TypeScriptGenerator.targets" />
 
 </Project>

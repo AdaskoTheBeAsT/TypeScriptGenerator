@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,6 +39,15 @@ namespace TypeScriptGenerator
                 throw new SymbolNotFoundException();
             }
 
+            var modelTargetPath = Path.Combine(targetPath, CodeGenerator.ModelsPath);
+            if (classSymbols.Count > 0)
+            {
+                if (!Directory.Exists(modelTargetPath))
+                {
+                    Directory.CreateDirectory(modelTargetPath);
+                }
+            }
+
             foreach (var namedTypeSymbolData in classSymbols)
             {
                 if (SkipClass(
@@ -50,7 +59,7 @@ namespace TypeScriptGenerator
                 }
 
                 var targetFile = GetTargetFile(
-                    targetPath,
+                    modelTargetPath,
                     namedTypeSymbolData.Name);
                 var sb = new StringBuilder();
                 GenerateHeader(sb);
@@ -162,9 +171,9 @@ namespace TypeScriptGenerator
             };
         }
 
-        internal string GetTargetFile(string targetPath, string typeName)
+        internal string GetTargetFile(string modelTargetPath, string typeName)
         {
-            return $"{targetPath}/{CodeGenerator.ModelsPath}/{typeName}.ts";
+            return Path.Combine(modelTargetPath, $"{typeName}.ts");
         }
     }
 }

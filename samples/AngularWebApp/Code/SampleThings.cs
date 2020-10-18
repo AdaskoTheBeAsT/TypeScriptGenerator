@@ -2,11 +2,11 @@ using System;
 
 namespace AngularWebApp.Code
 {
-    [TypeScriptGenerator.Include]
+    [TypeScriptGenerator.Attributes.Include]
     [Flags]
     public enum SampleThings
     {
-        [TypeScriptGenerator.EnumLabel("Zero")]
+        [TypeScriptGenerator.Attributes.EnumLabel("Zero")]
         None = 0,
         FirstValue = 1,
         SecondValue = 1 << 1,

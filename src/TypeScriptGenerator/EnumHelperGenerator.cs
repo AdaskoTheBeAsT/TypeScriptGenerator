@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 
 namespace TypeScriptGenerator
@@ -40,22 +40,27 @@ export abstract class EnumHelper {
       if (typeof val === 'function') {
         continue;
       }
-      values.push(<any>val);
+      values.push(val as any);
     }
     return values;
   }
 }
 ");
 
-            var targetFile = GetTargetFile(targetPath);
+            var enumTargetPath = Path.Combine(targetPath, CodeGenerator.EnumsPath);
+            if (!Directory.Exists(enumTargetPath))
+            {
+                Directory.CreateDirectory(enumTargetPath);
+            }
+            var targetFile = GetTargetFile(enumTargetPath);
 #pragma warning disable SCS0018 // Path traversal: injection possible in {1} argument passed to '{0}'
             File.WriteAllText(targetFile, sb.ToString(), CodeGenerator.Uft8WithoutBomEncoding);
 #pragma warning restore SCS0018 // Path traversal: injection possible in {1} argument passed to '{0}'
         }
 
-        internal string GetTargetFile(string targetPath)
+        internal string GetTargetFile(string enumTargetPath)
         {
-            return $"{targetPath}/{CodeGenerator.EnumsPath}/_enum-helper.ts";
+            return Path.Combine(enumTargetPath, "_enum-helper.ts");
         }
     }
 }

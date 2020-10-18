@@ -1,10 +1,10 @@
 namespace AngularWebApp.Code
 {
-    [TypeScriptGenerator.Include]
-    [TypeScriptGenerator.EnumAsString]
+    [TypeScriptGenerator.Attributes.Include]
+    [TypeScriptGenerator.Attributes.EnumAsString]
     public enum SampleText
     {
-        [TypeScriptGenerator.EnumLabel("Zero")]
+        [TypeScriptGenerator.Attributes.EnumLabel("Zero")]
         One,
 
         Two,

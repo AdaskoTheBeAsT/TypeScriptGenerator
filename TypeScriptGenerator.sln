@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".props", ".props", "{6BCA9799-1BD1-4A5D-A3C2-047187D026B1}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		AdaskoTheBeAsT.ruleset = AdaskoTheBeAsT.ruleset
 		DeterministicBuild.targets = DeterministicBuild.targets

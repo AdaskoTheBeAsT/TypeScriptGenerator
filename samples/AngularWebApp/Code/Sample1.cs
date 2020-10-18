@@ -1,6 +1,6 @@
 namespace AngularWebApp.Code
 {
-    [TypeScriptGenerator.Include]
+    [TypeScriptGenerator.Attributes.Include]
     public enum Sample1
     {
         First = 5,

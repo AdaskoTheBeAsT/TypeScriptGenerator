@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 #pragma warning disable 162
 
 namespace TypeScriptGenerator
@@ -21,24 +21,35 @@ namespace TypeScriptGenerator
         public const string ControllerBaseTypeName = "Microsoft.AspNetCore.Mvc.ControllerBase";
         public const string ControllerTypeName = "Microsoft.AspNetCore.Mvc.Controller";
         public static readonly Encoding Uft8WithoutBomEncoding = new UTF8Encoding(false, true);
-        private const string CustomNamespace = "TypeScriptGenerator";
-        private const string TargetPath = "./ClientApp/src/api";
+        private string? _typeScriptGeneratorOutputPath;
 
-        public void Execute(SourceGeneratorContext context)
+        public void Execute(GeneratorExecutionContext context)
         {
             if (!RegisterAttributes(context, out var receiver, out var compilation))
             {
                 return;
             }
 
+            if (!context.AnalyzerConfigOptions.GlobalOptions.TryGetValue(
+                "build_property.typescriptgeneratoroutputpath",
+                out _typeScriptGeneratorOutputPath))
+            {
+                return;
+            }
+
+            if (!Directory.Exists(_typeScriptGeneratorOutputPath))
+            {
+                Directory.CreateDirectory(_typeScriptGeneratorOutputPath);
+            }
+
             // get the newly bound attributes
-            var includeAttributeSymbol = compilation!.GetTypeByMetadataName(IncludeAttributeFullName);
+            var includeAttributeSymbol = compilation!.GetTypeByMetadataName("TypeScriptGenerator.Attributes.IncludeAttribute");
             if (includeAttributeSymbol is null)
             {
                 throw new SymbolNotFoundException();
             }
 
-            var customNameAttributeSymbol = compilation!.GetTypeByMetadataName(CustomNameAttributeFullName);
+            var customNameAttributeSymbol = compilation!.GetTypeByMetadataName("TypeScriptGenerator.Attributes.CustomNameAttribute");
             if (customNameAttributeSymbol is null)
             {
                 throw new SymbolNotFoundException();
@@ -50,31 +61,38 @@ namespace TypeScriptGenerator
             if (enumSymbols?.Count > 0)
             {
                 var enumHelperGenerator = new EnumHelperGenerator();
-                enumHelperGenerator.Generate(TargetPath);
+                enumHelperGenerator.Generate(_typeScriptGeneratorOutputPath);
             }
-
+            
             var enumCodeGenerator = new EnumCodeGenerator();
             enumCodeGenerator.Generate(
-                TargetPath,
+                _typeScriptGeneratorOutputPath,
                 compilation!,
                 enumSymbols);
             var classSymbols = FilterClassSymbols(receiver!, compilation, includeAttributeSymbol!);
             var modelCodeGenerator = new ModelCodeGenerator();
-            modelCodeGenerator.Generate(TargetPath, compilation, classSymbols);
+            modelCodeGenerator.Generate(_typeScriptGeneratorOutputPath, compilation, classSymbols);
         }
 
-        public void Initialize(InitializationContext context)
+        public void Initialize(GeneratorInitializationContext context)
         {
+#if DEBUG
+            if (!Debugger.IsAttached)
+            {
+                ////Debugger.Launch();
+            }
+#endif 
             context.RegisterForSyntaxNotifications(() => new CandidateReceiver());
         }
 
-        internal bool RegisterAttributes(SourceGeneratorContext context, out CandidateReceiver? typescriptCandidateReceiver, out Compilation? compilation)
+
+        internal bool RegisterAttributes(GeneratorExecutionContext context, out CandidateReceiver? typescriptCandidateReceiver, out Compilation? compilation)
         {
             // add the attribute text
-            context.AddSource(CustomNameAttributeName, SourceText.From(CustomNameAttributeText, Encoding.UTF8));
-            context.AddSource(EnumAsStringAttributeName, SourceText.From(EnumAsStringAttributeText, Encoding.UTF8));
-            context.AddSource(EnumLabelAttributeName, SourceText.From(EnumLabelAttributeText, Encoding.UTF8));
-            context.AddSource(IncludeAttributeName, SourceText.From(IncludeAttributeText, Encoding.UTF8));
+            ////context.AddSource(CustomNameAttributeName, SourceText.From(CustomNameAttributeText, Encoding.UTF8));
+            ////context.AddSource(EnumAsStringAttributeName, SourceText.From(EnumAsStringAttributeText, Encoding.UTF8));
+            ////context.AddSource(EnumLabelAttributeName, SourceText.From(EnumLabelAttributeText, Encoding.UTF8));
+            ////context.AddSource(IncludeAttributeName, SourceText.From(IncludeAttributeText, Encoding.UTF8));
 
             // retrieve the populated receiver
             if (!(context.SyntaxReceiver is CandidateReceiver receiver))
@@ -94,15 +112,17 @@ namespace TypeScriptGenerator
                 return false;
             }
 
-            var options = csharpCompilation.SyntaxTrees[0].Options as CSharpParseOptions;
-            compilation = context.Compilation.AddSyntaxTrees(
-                CSharpSyntaxTree.ParseText(SourceText.From(CustomNameAttributeText, Encoding.UTF8), options),
-                CSharpSyntaxTree.ParseText(SourceText.From(EnumAsStringAttributeText, Encoding.UTF8), options),
-                CSharpSyntaxTree.ParseText(SourceText.From(EnumLabelAttributeText, Encoding.UTF8), options),
-                CSharpSyntaxTree.ParseText(SourceText.From(IncludeAttributeText, Encoding.UTF8), options));
+            ////var options = csharpCompilation.SyntaxTrees[0].Options as CSharpParseOptions;
+            ////compilation = context.Compilation.AddSyntaxTrees(
+            ////    CSharpSyntaxTree.ParseText(SourceText.From(CustomNameAttributeText, Encoding.UTF8), options),
+            ////    CSharpSyntaxTree.ParseText(SourceText.From(EnumAsStringAttributeText, Encoding.UTF8), options),
+            ////    CSharpSyntaxTree.ParseText(SourceText.From(EnumLabelAttributeText, Encoding.UTF8), options),
+            ////    CSharpSyntaxTree.ParseText(SourceText.From(IncludeAttributeText, Encoding.UTF8), options));
+            compilation = context.Compilation;
 
             return true;
         }
+
 
         internal List<NamedTypeSymbolData> FilterClassSymbols(CandidateReceiver receiver, Compilation compilation, INamedTypeSymbol attributeSymbol)
         {

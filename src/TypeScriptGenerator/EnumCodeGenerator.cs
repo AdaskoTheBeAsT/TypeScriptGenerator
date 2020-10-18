@@ -24,13 +24,13 @@ namespace TypeScriptGenerator
                 throw new ArgumentNullException(nameof(enumSymbols));
             }
 
-            var enumAsStringAttributeSymbol = compilation!.GetTypeByMetadataName(CodeGenerator.EnumAsStringAttributeFullName);
+            var enumAsStringAttributeSymbol = compilation!.GetTypeByMetadataName("TypeScriptGenerator.Attributes.EnumAsStringAttribute");
             if (enumAsStringAttributeSymbol is null)
             {
                 throw new SymbolNotFoundException();
             }
 
-            var enumLabelAttributeSymbol = compilation!.GetTypeByMetadataName(CodeGenerator.EnumLabelAttributeFullName);
+            var enumLabelAttributeSymbol = compilation!.GetTypeByMetadataName("TypeScriptGenerator.Attributes.EnumLabelAttribute");
             if (enumLabelAttributeSymbol is null)
             {
                 throw new SymbolNotFoundException();
@@ -40,6 +40,15 @@ namespace TypeScriptGenerator
             if (flagsAttributeSymbol is null)
             {
                 throw new SymbolNotFoundException();
+            }
+
+            var enumTargetPath = Path.Combine(targetPath, CodeGenerator.EnumsPath);
+            if (enumSymbols.Count > 0)
+            {
+                if (!Directory.Exists(enumTargetPath))
+                {
+                    Directory.CreateDirectory(enumTargetPath);
+                }
             }
 
             foreach (var namedTypeSymbolData in enumSymbols)
@@ -52,7 +61,7 @@ namespace TypeScriptGenerator
                        namedTypeSymbolData,
                        flagsAttributeSymbol,
                        enumLabelAttributeSymbol,
-                       targetPath);
+                       enumTargetPath);
                 }
                 else
                 {
@@ -60,7 +69,7 @@ namespace TypeScriptGenerator
                         namedTypeSymbolData,
                         flagsAttributeSymbol,
                         enumLabelAttributeSymbol,
-                        targetPath);
+                        enumTargetPath);
                 }
             }
         }
@@ -69,10 +78,10 @@ namespace TypeScriptGenerator
             NamedTypeSymbolData namedTypeSymbolData,
             INamedTypeSymbol flagsAttributeSymbol,
             INamedTypeSymbol enumLabelAttributeSymbol,
-            string targetPath)
+            string enumTargetPath)
         {
             var typeName = namedTypeSymbolData.Name;
-            var targetFile = GetTargetFile(targetPath, typeName);
+            var targetFile = GetTargetFile(enumTargetPath, typeName);
             var fields = GetFieldSymbols(namedTypeSymbolData);
 
             var sb = new StringBuilder();
@@ -117,7 +126,7 @@ namespace TypeScriptGenerator
             NamedTypeSymbolData namedTypeSymbolData,
             INamedTypeSymbol flagsAttributeSymbol,
             INamedTypeSymbol enumLabelAttributeSymbol,
-            string targetPath)
+            string enumTargetPath)
         {
             var flagsAttributeData = namedTypeSymbolData.NamedTypeSymbol.GetAttributes().FirstOrDefault(a =>
                 a.AttributeClass?.Equals(flagsAttributeSymbol, SymbolEqualityComparer.Default) == true);
@@ -129,7 +138,7 @@ namespace TypeScriptGenerator
 
             var typeName = namedTypeSymbolData.Name;
 
-            var targetFile = GetTargetFile(targetPath, typeName);
+            var targetFile = GetTargetFile(enumTargetPath, typeName);
             var fields = GetFieldSymbols(namedTypeSymbolData);
 
             var sb = new StringBuilder();
@@ -171,7 +180,7 @@ namespace TypeScriptGenerator
 
         internal string GetTargetFile(string targetPath, string typeName)
         {
-            return $"{targetPath}/{CodeGenerator.EnumsPath}/{typeName}.ts";
+            return Path.Combine(targetPath, $"{typeName}.ts");
         }
 
         internal List<IFieldSymbol> GetFieldSymbols(NamedTypeSymbolData namedTypeSymbolData)

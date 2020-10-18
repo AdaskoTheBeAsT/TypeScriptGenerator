@@ -1,6 +1,6 @@
-﻿namespace AngularWebApp.Code
+namespace AngularWebApp.Code
 {
-    [TypeScriptGenerator.Include]
+    [TypeScriptGenerator.Attributes.Include]
     public class Material
     {
         public int Id { get; set; }

@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <TypeScriptGeneratorOutputPath Condition="'$(TypeScriptGeneratorOutputPath)' == ''">$(MSBuildProjectDirectory)\ClientApp\src\api</TypeScriptGeneratorOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="TypeScriptGeneratorOutputPath" />
+  </ItemGroup>
+</Project>

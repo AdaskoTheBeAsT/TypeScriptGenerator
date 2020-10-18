@@ -1,6 +1,6 @@
-﻿namespace AngularWebApp.Code
+namespace AngularWebApp.Code
 {
-    [TypeScriptGenerator.Include]
+    [TypeScriptGenerator.Attributes.Include]
     public class Product
     {
         public Product()

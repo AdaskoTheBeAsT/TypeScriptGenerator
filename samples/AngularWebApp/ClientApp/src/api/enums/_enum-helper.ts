@@ -30,7 +30,7 @@ export abstract class EnumHelper {
       if (typeof val === 'function') {
         continue;
       }
-      values.push(<any>val);
+      values.push(val as any);
     }
     return values;
   }
