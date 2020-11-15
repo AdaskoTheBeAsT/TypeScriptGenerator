@@ -1,8 +1,7 @@
-using System;
 using System.Globalization;
 using System.Text;
 
-namespace TypeScriptGenerator
+namespace TypeScriptGenerator.Exceptions
 {
     public static class StringExtensions
     {

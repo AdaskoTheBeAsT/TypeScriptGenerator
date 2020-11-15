@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using TypeScriptGenerator.Exceptions;
 
 namespace TypeScriptGenerator
 {
@@ -43,12 +44,9 @@ namespace TypeScriptGenerator
             }
 
             var enumTargetPath = Path.Combine(targetPath, CodeGenerator.EnumsPath);
-            if (enumSymbols.Count > 0)
+            if (enumSymbols.Count > 0 && !Directory.Exists(enumTargetPath))
             {
-                if (!Directory.Exists(enumTargetPath))
-                {
-                    Directory.CreateDirectory(enumTargetPath);
-                }
+                Directory.CreateDirectory(enumTargetPath);
             }
 
             foreach (var namedTypeSymbolData in enumSymbols)
@@ -90,7 +88,7 @@ namespace TypeScriptGenerator
             sb.AppendLine($"export enum {typeName} {{");
             foreach (var fieldSymbol in fields)
             {
-                sb.AppendLine($"  {fieldSymbol.Name} = {fieldSymbol.ConstantValue?.ToString()},");
+                sb.AppendLine($"  {fieldSymbol.Name} = {fieldSymbol.ConstantValue},");
             }
 
             sb.AppendLine("}").AppendLine();

@@ -52,6 +52,7 @@ export abstract class EnumHelper {
             {
                 Directory.CreateDirectory(enumTargetPath);
             }
+
             var targetFile = GetTargetFile(enumTargetPath);
 #pragma warning disable SCS0018 // Path traversal: injection possible in {1} argument passed to '{0}'
             File.WriteAllText(targetFile, sb.ToString(), CodeGenerator.Uft8WithoutBomEncoding);

@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using TypeScriptGenerator.Exceptions;
+
 #pragma warning disable 162
 
 namespace TypeScriptGenerator
@@ -40,12 +42,9 @@ namespace TypeScriptGenerator
             }
 
             var modelTargetPath = Path.Combine(targetPath, CodeGenerator.ModelsPath);
-            if (classSymbols.Count > 0)
+            if (classSymbols.Count > 0 && !Directory.Exists(modelTargetPath))
             {
-                if (!Directory.Exists(modelTargetPath))
-                {
-                    Directory.CreateDirectory(modelTargetPath);
-                }
+                Directory.CreateDirectory(modelTargetPath);
             }
 
             foreach (var namedTypeSymbolData in classSymbols)
@@ -85,7 +84,7 @@ namespace TypeScriptGenerator
             sb.AppendLine(CodeGenerator.Header).AppendLine();
         }
 
-        internal IEnumerable<IPropertySymbol>? GetProperties(NamedTypeSymbolData namedTypeSymbolData)
+        internal IEnumerable<IPropertySymbol> GetProperties(NamedTypeSymbolData namedTypeSymbolData)
         {
             return namedTypeSymbolData.NamedTypeSymbol.GetMembers()
                 .Where(m => m.DeclaredAccessibility == Accessibility.Public && m.Kind == SymbolKind.Property && m is IPropertySymbol)
@@ -111,12 +110,41 @@ namespace TypeScriptGenerator
                 if (propertyType.TypeKind == TypeKind.Class
                     && propertyType.SpecialType == SpecialType.None)
                 {
-                    sb.AppendLine($"import {{ {propertyType.Name} }} from './{propertyType.Name}';");
-                    atLeastOneImportGenerated = true;
+                    switch (propertyType.SpecialType)
+                    {
+                        case SpecialType.Count:
+                        case SpecialType.System_ArgIterator:
+                        case SpecialType.System_AsyncCallback:
+                        case SpecialType.System_Boolean:
+                        case SpecialType.System_Byte:
+                        case SpecialType.System_Char:
+                        case SpecialType.System_Collections_Generic_IEnumerator_T:
+                        case SpecialType.System_Collections_IEnumerator:
+                        case SpecialType.System_DateTime:
+                        case SpecialType.System_Decimal:
+                        case SpecialType.System_Delegate:
+                        case SpecialType.System_Double:
+                        case SpecialType.System_IAsyncResult:
+                        case SpecialType.System_Enum:
+                        case SpecialType.System_Int16:
+                        case SpecialType.System_Int32:
+                        case SpecialType.System_Int64:
+                        case SpecialType.System_IntPtr:
+                        case SpecialType.System_MulticastDelegate:
+                        case SpecialType.System_Object:
+                        case SpecialType.System_RuntimeArgumentHandle:
+                            break;
+                        case SpecialType.None:
+                            sb.AppendLine($"import {{ {propertyType.Name} }} from './{propertyType.Name}';");
+                            atLeastOneImportGenerated = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 else if (propertyType.TypeKind == TypeKind.Enum)
                 {
-                    sb.AppendLine($"import {{ {propertyType.Name} }} from 'src/api/enums/{propertyType.Name}';");
+                    sb.AppendLine($"import {{ {propertyType.Name} }} from '../enums/{propertyType.Name}';");
                     atLeastOneImportGenerated = true;
                 }
 
